@@ -1,0 +1,17 @@
+FROM balenalib/%%BALENA_ARCH%%-ubuntu:cosmic-run
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN install_packages bluez pulseaudio pulseaudio-utils alsa-utils \
+                    pulseaudio-module-bluetooth policykit-1 \
+                    pm-utils i2c-tools evtest python3 python3-pip python3-dbus kbd
+
+RUN pip3 install keyboard
+
+COPY daemon.conf /etc/pulse/daemon.conf
+
+COPY . .
+
+ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
+
+CMD ["bash", "start.sh"]
